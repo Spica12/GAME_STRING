@@ -5,106 +5,182 @@
 
 from random import randint, choice
 
-SIZE_N = randint(5, 20) # row
-SIZE_M = randint(5, 20) # column
+
+def load():
+    objects = []
+
+    with open('save.txt', 'r') as file:
+
+        for indx, line in enumerate(file):
+
+            if indx == 0:
+                map_size = line.rstrip().split()
+                size_n, size_m = int(map_size[0]), int(map_size[1])
+            elif indx == 1:
+                turns = int(line.rstrip())
+            else:
+                data = line.rstrip().split()
+
+                obj = {}
+                obj['x'], obj['y'] = int(data[0]), int(data[1])
+                obj['sign'] = data[2]
+                obj['type'] = data[3]
+
+                objects.append(obj)
+
+    return objects, turns, size_n, size_m
 
 
-def check_state(char_x, char_y, char_sign,
-                enemy_x, enemy_y,
-                exit_x, exit_y):
+is_load = input('Do you want to load game? (y/''): ')
 
-    win_condition = char_x == exit_x and char_y == exit_y
-    loss_condition = char_x == enemy_x and char_y == enemy_y
+if is_load:
+    objects, turns, SIZE_N, SIZE_M = load()
+else:
+    # SIZE_N = 30 # randint(10, 20) # column
+    SIZE_N = randint(10, 20) # column
 
-    if win_condition:
-        char_sign = 'W'
-        print(f'You WON in {turns} turns')
-    elif loss_condition:
-        char_sign = 'L'
-        print(f'You LOST in {turns} turns')
-
-    return char_sign, win_condition or loss_condition
+    # SIZE_M = 13 # randint(10, 20) # row
+    SIZE_M = randint(10, 20) # row
 
 
-def generate_map(char_x, char_y, char_sign,
-                 enemy_x, enemy_y, enemy_sign,
-                 exit_x, exit_y, exit_sign,
-                 size_m=SIZE_M, size_n=SIZE_N):
+def check_state(objects):
+
+    for obj in objects:
+
+        if obj['type'] == 'char':
+            char  = obj
+        elif obj['type'] =='portal':
+            portal = obj
+        elif obj['type'] == 'enemy':
+            loss_condition = char['x'] == obj['x'] and \
+                            char['y'] == obj['y']
+            
+            if loss_condition:
+                char['sign'] = 'L'
+                print(f'You LOST in {turns} turns')
+                break
+
+    win_condition = char['x'] == portal['x'] and \
+                    char['y'] == portal['y']
     
-    world_map = ''
+    if win_condition:
+        char['sign'] = 'W'
+        print(f'You WON in {turns} turns')        
+
+    return win_condition or loss_condition
+
+
+def generate_enemies(count):
+
+    enemies = []
+
+    for _ in range(count):
+
+        enemy = {'x': randint(0, SIZE_N - 1),
+            'y': randint(0, SIZE_M - 1),
+            'sign': 'E',
+            'type': 'enemy'}
+        
+        enemies. append(enemy)
+
+    return enemies
+
+
+def generate_map(objects, size_m=SIZE_M, size_n=SIZE_N):
+    
+    world_map = []
 
     for j in range(size_m):
-        row = '|'
+        row = []
 
         for i in range(size_n):
+            row.append(' ')
 
-            if char_x == i and char_y == j:
-                row += f'{char_sign}|'
-            elif enemy_x == i and enemy_y == j:
-                row += f'{enemy_sign}|'
-            elif exit_x == i and exit_y == j:
-                row += f'{exit_sign}|'
-            else:
-                row += ' |'
-    
-        world_map += f'{row}\n'
+        world_map.append(row)
+
+    for obj in objects:
+        world_map[obj['y']][obj['x']] = obj['sign']
+
 
     return world_map
 
 
-def move(direction, x, y, size_m=SIZE_M, size_n=SIZE_N):
+def move(direction, obj, size_m=SIZE_M, size_n=SIZE_N):
     
-    if direction == 'w' and y > 0:
-        y -= 1
-    elif direction == 's' and y < size_m - 1:
-        y += 1
-    elif direction == 'a' and x > 0:
-        x -= 1
-    elif direction == 'd' and x < size_n - 1:
-        x += 1
-
-    return x, y
+    if direction == 'w' and obj['y'] > 0:
+        obj['y'] -= 1
+    elif direction == 's' and obj['y'] < size_m - 1:
+        obj['y'] += 1
+    elif direction == 'a' and obj['x'] > 0:
+        obj['x'] -= 1
+    elif direction == 'd' and obj['x'] < size_n - 1:
+        obj['x']+= 1
 
 
-char_x = 3
-char_y = 2
-char_sign = 'X'
+def print_map(world_map):
 
-enemy_x = randint(0, SIZE_N - 1)
-enemy_y = randint(0, SIZE_M - 1)
-enemy_sign = 'E'
+    for row in world_map:
+        print(f'|{"|".join(row)}|')
 
 
-exit_x = randint(0, SIZE_N - 1)
-exit_y = randint(0, SIZE_M - 1)
-exit_sign = 'O'
+def save(objects, turns, size_n = SIZE_N, size_m=SIZE_M):
+    # 14 14 X char
+    with open('save.txt', 'w') as file:
 
-turns = 0
+        file.write(f'{size_n} {size_m}\n')
+        file.write(f'{turns}\n')
+
+        for obj in objects:
+            file.write(f"{obj['x']} {obj['y']} {obj['sign']} {obj['type']} \n")
+
+    print('Game saved!')
+
+
+
+if not is_load:
+
+    char = {'x': randint(0, SIZE_N - 1),
+        'y': randint(0, SIZE_M - 1),
+        'sign': 'X',
+        'type': 'char'}
+
+
+    portal = {'x': randint(0, SIZE_N - 1),
+            'y': randint(0, SIZE_M - 1),
+            'sign': 'O',
+            'type': 'portal'}
+
+    enemies = generate_enemies(10)
+
+    objects = [char, portal] + enemies
+
+    turns = 0
+
 
 while True:
 
+    end_flag = check_state(objects)
 
-    char_sign, end_flag = check_state(char_x, char_y, char_sign,
-                            enemy_x, enemy_y,
-                            exit_x, exit_y)
-
-    world_map = generate_map(char_x, char_y, char_sign,
-                             enemy_x, enemy_y, enemy_sign, 
-                             exit_x, exit_y, exit_sign)
+    world_map = generate_map(objects)
 
     print(f'Turns: {turns}')
-    print(world_map)
+    print_map(world_map)
 
     if end_flag:
         break
+    
+    for obj in objects:
 
+        direction = ''
 
-    direction = input('Enter direction (w / s / a / d) ')
-    char_x, char_y = move(direction, char_x, char_y)
-
-    enemy_direction = choice('wsad')
-    enemy_x, enemy_y = move(enemy_direction, enemy_x, enemy_y)
+        if obj['type'] == 'char':
+            direction = input('Enter action (w / s / a / d) ')
+        elif obj['type'] == 'enemy':
+            direction = choice('wsad')
+        
+        move(direction, obj)
 
     turns += 1
-    
+    save(objects, turns, SIZE_M, SIZE_N)
+
     print()
