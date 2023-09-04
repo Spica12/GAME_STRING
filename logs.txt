@@ -1,0 +1,11 @@
+04.09.2023 21:05:40 - INFO - 01 Generating map size_n: 5; size_m: 6
+04.09.2023 21:06:40 - INFO - 02 Generated map size_n: 5; size_m: 6
+04.09.2023 21:07:40 - INFO - 03 Generating map size_n: 5; size_m: 6
+04.09.2023 21:08:40 - INFO - 04 Generated map size_n: 5; size_m: 6
+04.09.2023 21:09:40 - INFO - 05 Generating map size_n: 5; size_m: 6
+04.09.2023 21:10:40 - INFO - 06 Generated map size_n: 5; size_m: 6
+04.09.2023 21:11:40 - INFO - 07 Generating map size_n: 5; size_m: 6
+04.09.2023 21:12:40 - INFO - 08 Generated map size_n: 5; size_m: 6
+04.09.2023 21:13:40 - INFO - 09 Generating map size_n: 5; size_m: 6
+04.09.2023 21:14:40 - INFO - 10 Generated map size_n: 5; size_m: 604.09.2023 21:38:58 - INFO - Generating map size_n: 5; size_m: 6
+04.09.2023 21:38:58 - INFO - Generated map size_n: 5; size_m: 6

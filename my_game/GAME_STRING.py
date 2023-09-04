@@ -6,10 +6,9 @@
 from random import randint, choice
 
 # from game_engine.map import generate_map, print_map
-from map import generate_map, print_map
-from game_engine.tools import load, save
-
-
+from game_map import generate_map, print_map
+# from game_engine.tools import load, save
+from tools import load, save
 
 
 
@@ -80,13 +79,6 @@ def move(direction, obj, size_m=SIZE_M, size_n=SIZE_N):
         obj['x'] -= 1
     elif direction == 'd' and obj['x'] < size_n - 1:
         obj['x']+= 1
-
-
-
-
-
-
-
 
 
 if not is_load:
