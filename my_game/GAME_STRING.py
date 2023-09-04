@@ -10,11 +10,25 @@ from game_map import generate_map, print_map
 # from game_engine.tools import load, save
 from tools import load, save
 
+def generate_enemies(count):
+
+    enemies = []
+
+    for _ in range(count):
+
+        enemy = {'x': randint(0, SIZE_N - 1),
+            'y': randint(0, SIZE_M - 1),
+            'sign': 'E',
+            'type': 'enemy'}
+        
+        enemies. append(enemy)
+
+    return enemies
 
 
 is_load = input('Do you want to load game? (y/''): ')
 
-if is_load:
+if is_load.casefold() == 'y':
     objects, turns, SIZE_N, SIZE_M = load()
 else:
     # SIZE_N = 30 # randint(10, 20) # column
@@ -22,6 +36,22 @@ else:
 
     # SIZE_M = 13 # randint(10, 20) # row
     SIZE_M = randint(5, 10) # row
+
+    char = {'x': randint(0, SIZE_N - 1),
+            'y': randint(0, SIZE_M - 1),
+            'sign': 'X',
+            'type': 'char'}
+
+    portal = {'x': randint(0, SIZE_N - 1),
+              'y': randint(0, SIZE_M - 1),
+              'sign': 'O',
+              'type': 'portal'}
+
+    enemies = generate_enemies(5)
+
+    objects = [char, portal] + enemies
+
+    turns = 0
 
 
 def check_state(objects):
@@ -51,25 +81,7 @@ def check_state(objects):
     return win_condition or loss_condition
 
 
-def generate_enemies(count):
-
-    enemies = []
-
-    for _ in range(count):
-
-        enemy = {'x': randint(0, SIZE_N - 1),
-            'y': randint(0, SIZE_M - 1),
-            'sign': 'E',
-            'type': 'enemy'}
-        
-        enemies. append(enemy)
-
-    return enemies
-
-
-
-
-def move(direction, obj, size_m=SIZE_M, size_n=SIZE_N):
+def move(direction, obj, size_n=SIZE_N, size_m=SIZE_M):
     
     if direction == 'w' and obj['y'] > 0:
         obj['y'] -= 1
@@ -81,31 +93,11 @@ def move(direction, obj, size_m=SIZE_M, size_n=SIZE_N):
         obj['x']+= 1
 
 
-if not is_load:
-
-    char = {'x': randint(0, SIZE_N - 1),
-        'y': randint(0, SIZE_M - 1),
-        'sign': 'X',
-        'type': 'char'}
-
-
-    portal = {'x': randint(0, SIZE_N - 1),
-            'y': randint(0, SIZE_M - 1),
-            'sign': 'O',
-            'type': 'portal'}
-
-    enemies = (5)
-
-    objects = [char, portal] + enemies
-
-    turns = 0
-
-
 while True:
 
     end_flag = check_state(objects)
 
-    world_map = generate_map(objects, SIZE_M, SIZE_N)
+    world_map = generate_map(objects, SIZE_N, SIZE_M)
 
     print(f'Turns: {turns}')
     print_map(world_map)
@@ -125,6 +117,6 @@ while True:
         move(direction, obj)
 
     turns += 1
-    save(objects, turns, SIZE_M, SIZE_N)
+    save(objects, turns, SIZE_N, SIZE_M)
 
     print()
