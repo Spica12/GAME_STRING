@@ -5,30 +5,12 @@
 
 from random import randint, choice
 
+# from game_engine.map import generate_map, print_map
+from map import generate_map, print_map
+from game_engine.tools import load, save
 
-def load():
-    objects = []
 
-    with open('save.txt', 'r') as file:
 
-        for indx, line in enumerate(file):
-
-            if indx == 0:
-                map_size = line.rstrip().split()
-                size_n, size_m = int(map_size[0]), int(map_size[1])
-            elif indx == 1:
-                turns = int(line.rstrip())
-            else:
-                data = line.rstrip().split()
-
-                obj = {}
-                obj['x'], obj['y'] = int(data[0]), int(data[1])
-                obj['sign'] = data[2]
-                obj['type'] = data[3]
-
-                objects.append(obj)
-
-    return objects, turns, size_n, size_m
 
 
 is_load = input('Do you want to load game? (y/''): ')
@@ -37,10 +19,10 @@ if is_load:
     objects, turns, SIZE_N, SIZE_M = load()
 else:
     # SIZE_N = 30 # randint(10, 20) # column
-    SIZE_N = randint(10, 20) # column
+    SIZE_N = randint(5, 10) # column
 
     # SIZE_M = 13 # randint(10, 20) # row
-    SIZE_M = randint(10, 20) # row
+    SIZE_M = randint(5, 10) # row
 
 
 def check_state(objects):
@@ -86,23 +68,6 @@ def generate_enemies(count):
     return enemies
 
 
-def generate_map(objects, size_m=SIZE_M, size_n=SIZE_N):
-    
-    world_map = []
-
-    for j in range(size_m):
-        row = []
-
-        for i in range(size_n):
-            row.append(' ')
-
-        world_map.append(row)
-
-    for obj in objects:
-        world_map[obj['y']][obj['x']] = obj['sign']
-
-
-    return world_map
 
 
 def move(direction, obj, size_m=SIZE_M, size_n=SIZE_N):
@@ -117,23 +82,10 @@ def move(direction, obj, size_m=SIZE_M, size_n=SIZE_N):
         obj['x']+= 1
 
 
-def print_map(world_map):
-
-    for row in world_map:
-        print(f'|{"|".join(row)}|')
 
 
-def save(objects, turns, size_n = SIZE_N, size_m=SIZE_M):
-    # 14 14 X char
-    with open('save.txt', 'w') as file:
 
-        file.write(f'{size_n} {size_m}\n')
-        file.write(f'{turns}\n')
 
-        for obj in objects:
-            file.write(f"{obj['x']} {obj['y']} {obj['sign']} {obj['type']} \n")
-
-    print('Game saved!')
 
 
 
@@ -150,7 +102,7 @@ if not is_load:
             'sign': 'O',
             'type': 'portal'}
 
-    enemies = generate_enemies(10)
+    enemies = (5)
 
     objects = [char, portal] + enemies
 
@@ -161,7 +113,7 @@ while True:
 
     end_flag = check_state(objects)
 
-    world_map = generate_map(objects)
+    world_map = generate_map(objects, SIZE_M, SIZE_N)
 
     print(f'Turns: {turns}')
     print_map(world_map)

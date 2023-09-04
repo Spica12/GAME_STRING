@@ -1,0 +1,11 @@
+LICENCE
+README.md
+pyproject.toml
+setup.cfg
+src/game_engine/__init__.py
+src/game_engine/map.py
+src/game_engine/tools.py
+src/game_engine.egg-info/PKG-INFO
+src/game_engine.egg-info/SOURCES.txt
+src/game_engine.egg-info/dependency_links.txt
+src/game_engine.egg-info/top_level.txt
