@@ -1,5 +1,16 @@
 from helpers import log_message
 
+# Поки що не можна створити.
+# Треба змінити архітектуру програми 
+def turns(func):
+
+    def inner(*qrgs, **kwargs):
+
+        func(*qrgs, **kwargs)
+
+    return inner
+
+
 def generate_map(objects, size_m, size_n):
 
     log_message(f'Generating map size_n: {size_n}; size_m: {size_m}')

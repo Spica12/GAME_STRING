@@ -19,7 +19,9 @@ def generate_enemies(count):
         enemy = {'x': randint(0, SIZE_N - 1),
             'y': randint(0, SIZE_M - 1),
             'sign': 'E',
-            'type': 'enemy'}
+            'type': 'enemy',
+            'movable': True
+        }
         
         enemies. append(enemy)
 
@@ -40,12 +42,16 @@ else:
     char = {'x': randint(0, SIZE_N - 1),
             'y': randint(0, SIZE_M - 1),
             'sign': 'X',
-            'type': 'char'}
+            'type': 'char',
+            'movable': True
+    }
 
     portal = {'x': randint(0, SIZE_N - 1),
               'y': randint(0, SIZE_M - 1),
               'sign': 'O',
-              'type': 'portal'}
+              'type': 'portal',
+              'movable': False
+    }
 
     enemies = generate_enemies(5)
 
@@ -81,16 +87,63 @@ def check_state(objects):
     return win_condition or loss_condition
 
 
-def move(direction, obj, size_n=SIZE_N, size_m=SIZE_M):
+# def move(direction, obj, size_n=SIZE_N, size_m=SIZE_M):
     
-    if direction == 'w' and obj['y'] > 0:
+#     if direction == 'w' and obj['y'] > 0:
+#         obj['y'] -= 1
+#     elif direction == 's' and obj['y'] < size_m - 1:
+#         obj['y'] += 1
+#     elif direction == 'a' and obj['x'] > 0:
+#         obj['x'] -= 1
+#     elif direction == 'd' and obj['x'] < size_n - 1:
+#         obj['x'] += 1
+
+
+def move_up(obj, size_n=SIZE_N, size_m=SIZE_M):
+
+    if obj['y'] > 0:
         obj['y'] -= 1
-    elif direction == 's' and obj['y'] < size_m - 1:
+
+
+def move_down(obj, size_n=SIZE_N, size_m=SIZE_M):
+
+    if obj['y'] < size_m - 1:
         obj['y'] += 1
-    elif direction == 'a' and obj['x'] > 0:
+
+
+def move_left(obj, size_n=SIZE_N, size_m=SIZE_M):
+
+    if obj['x'] > 0:
         obj['x'] -= 1
-    elif direction == 'd' and obj['x'] < size_n - 1:
-        obj['x']+= 1
+
+
+def move_right(obj, size_n=SIZE_N, size_m=SIZE_M):
+
+    if obj['x'] < size_n - 1:
+        obj['x'] += 1
+
+
+def move_up_left(obj, size_n=SIZE_N, size_m=SIZE_M):
+
+    if obj['y'] > 0 and obj['x'] > 0:
+        obj['x'] -= 1
+        obj['y'] -= 1
+        
+
+    
+
+moves = {
+    'w': move_up,
+    's': move_down,
+    'a': move_left,
+    'd': move_right,
+    'wa': move_up_left,
+    'aw': move_up_left,
+}
+
+
+def get_move_handler(direction):
+    return moves[direction]
 
 
 while True:
@@ -105,16 +158,17 @@ while True:
     if end_flag:
         break
     
-    for obj in objects:
+    for obj in filter(lambda o: o['movable'], objects):
 
         direction = ''
 
         if obj['type'] == 'char':
             direction = input('Enter action (w / s / a / d) ')
         elif obj['type'] == 'enemy':
-            direction = choice('wsad')
+            direction = choice(('w', 's', 'a', 'd', 'aw'))
         
-        move(direction, obj)
+        move_handler = get_move_handler(direction)
+        move_handler(obj)
 
     turns += 1
     save(objects, turns, SIZE_N, SIZE_M)
