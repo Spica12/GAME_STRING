@@ -1,9 +1,9 @@
-7 6
-2
-1 5 X char 
-3 1 O portal 
-4 2 E enemy 
-1 5 E enemy 
-0 4 E enemy 
-3 2 E enemy 
-6 5 E enemy 
+30 18
+21
+13 9 Character 
+18 6 Portal 
+21 0 Enemy 
+19 5 Enemy 
+1 0 Enemy 
+0 6 Enemy 
+2 1 Enemy 

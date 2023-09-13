@@ -1,4 +1,11 @@
+# from config import SIZE_N, SIZE_M
+from entities import Character, Enemy, Portal
 
+obj_map = {
+    'Character': Character,
+    'Enemy': Enemy,
+    'Portal': Portal
+}
 
 def load():
     objects = []
@@ -15,10 +22,7 @@ def load():
             else:
                 data = line.rstrip().split()
 
-                obj = {}
-                obj['x'], obj['y'] = int(data[0]), int(data[1])
-                obj['sign'] = data[2]
-                obj['type'] = data[3]
+                obj = obj_map[data[2]](int(data[0]), int(data[1]))
 
                 objects.append(obj)
 
@@ -33,6 +37,6 @@ def save(objects, turns, size_n, size_m):
         file.write(f'{turns}\n')
 
         for obj in objects:
-            file.write(f"{obj['x']} {obj['y']} {obj['sign']} {obj['type']} \n")
+            file.write(f"{obj.x} {obj.y} {type(obj).__name__} \n")
 
     print('Game saved!')
